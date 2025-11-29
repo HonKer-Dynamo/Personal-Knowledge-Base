@@ -1,6 +1,6 @@
 # 🧠 个人知识库 - Personal Knowledge Base
 [![GitHub stars](https://img.shields.io/github/stars/HonKer-Dynamo/Personal-Knowledge-Base?style=social)](https://github.com/HonKer-Dynamo/Personal-Knowledge-Base)
-[![Gitee stars](https://gitee.com/honkerdynamo/personal-knowledge-base/badge/star.svg)](https://gitee.com/HonKer-Dynamo/personal-knowledge-base)
+[![Gitee stars](https://gitee.com/HonKer-Dynamo/personal-knowledge-base/badge/star.svg)](https://gitee.com/HonKer-Dynamo/personal-knowledge-base)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/Node.js-18%2B-brightgreen.svg)](https://nodejs.org/)
 [![Last Commit](https://img.shields.io/github/last-commit/HonKer-Dynamo/Personal-Knowledge-Base.svg)](https://github.com/HonKer-Dynamo/Personal-Knowledge-Base/commits/main)
