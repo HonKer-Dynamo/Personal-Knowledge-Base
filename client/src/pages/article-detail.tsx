@@ -8,12 +8,15 @@ import {
   Share2,
   BookOpen,
   Edit,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
+import { Comments } from "@/components/comments";
+import { VersionHistory } from "@/components/version-history";
 import { useToast } from "@/hooks/use-toast";
 import type { Article, Category } from "@shared/schema";
 
@@ -54,6 +57,30 @@ export default function ArticleDetail() {
       toast({
         title: "链接已复制",
         description: "文章链接已复制到剪贴板",
+      });
+    }
+  };
+
+  const handleExportPDF = () => {
+    if (!article) return;
+
+    const element = document.getElementById("article-content");
+    if (!element) return;
+
+    const opt = {
+      margin: 10,
+      filename: `${article.slug}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { orientation: "portrait", unit: "mm", format: "a4" },
+    };
+
+    const html2pdf = (window as any).html2pdf;
+    if (html2pdf) {
+      html2pdf().set(opt).from(element).save();
+      toast({
+        title: "导出成功",
+        description: `${article.title}.pdf 已下载`,
       });
     }
   };
@@ -159,6 +186,15 @@ export default function ArticleDetail() {
             <Button
               variant="ghost"
               size="icon"
+              onClick={handleExportPDF}
+              data-testid="button-export-pdf"
+              title="导出为PDF"
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleShare}
               data-testid="button-share"
             >
@@ -175,9 +211,17 @@ export default function ArticleDetail() {
 
       <Separator className="mb-8" />
 
-      <div className="article-content" data-testid="article-content">
+      <div id="article-content" className="article-content" data-testid="article-content">
         <MarkdownRenderer content={article.content} />
       </div>
+
+      <Separator className="my-12" />
+
+      <VersionHistory articleId={article.id} />
+
+      <Separator className="my-12" />
+
+      <Comments articleSlug={article.slug} articleId={article.id} />
 
       <Separator className="my-12" />
 
