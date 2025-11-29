@@ -151,6 +151,18 @@ curl -X POST http://localhost:5000/api/comments \
 
 MIT
 
+## 项目文档
+
+### 设计规范
+- **design_guidelines.md**: 英文设计指南，包含排版系统、布局策略和组件库规范
+- **design_guidelines_zh.md**: 中文设计指南，与英文版本完全对应
+
+### 源码说明
+- **SOURCE_CODE.md**: 项目源码的详细结构说明和模块介绍
+
+### Replit 部署
+- **replit.md**: 在 Replit 平台上部署和运行项目的专属指南
+
 ## 作者
 
 HonKer-Dynamo
