@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertArticleSchema, insertCategorySchema } from "@shared/schema";
+import { insertArticleSchema, insertCategorySchema, insertCommentSchema, insertArticleVersionSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(
@@ -145,6 +145,77 @@ export async function registerRoutes(
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: "Failed to delete category" });
+    }
+  });
+
+  // Article Versions API
+  app.get("/api/articles/:id/versions", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const versions = await storage.getArticleVersions(id);
+      res.json(versions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch versions" });
+    }
+  });
+
+  app.post("/api/articles/:id/versions", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const versionData = req.body;
+      const validatedData = insertArticleVersionSchema.parse({
+        ...versionData,
+        articleId: id,
+      });
+      
+      const version = await storage.createArticleVersion(validatedData);
+      res.status(201).json(version);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to save version" });
+    }
+  });
+
+  // Comments API
+  app.get("/api/articles/:slug/comments", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const article = await storage.getArticleBySlug(slug);
+      if (!article) {
+        return res.status(404).json({ error: "Article not found" });
+      }
+      const comments = await storage.getComments(article.id);
+      res.json(comments);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch comments" });
+    }
+  });
+
+  app.post("/api/comments", async (req, res) => {
+    try {
+      const validatedData = insertCommentSchema.parse(req.body);
+      const comment = await storage.createComment(validatedData);
+      res.status(201).json(comment);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create comment" });
+    }
+  });
+
+  app.delete("/api/comments/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteComment(id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Comment not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete comment" });
     }
   });
 

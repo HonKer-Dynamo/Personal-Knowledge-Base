@@ -54,6 +54,47 @@ export const insertArticleSchema = createInsertSchema(articles).omit({
 export type InsertArticle = z.infer<typeof insertArticleSchema>;
 export type Article = typeof articles.$inferSelect;
 
+export const articleVersions = pgTable("article_versions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  articleId: varchar("article_id").notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  excerpt: text("excerpt"),
+  categoryId: varchar("category_id"),
+  tags: text("tags").array().default(sql`'{}'::text[]`),
+  published: boolean("published").notNull().default(false),
+  readingTime: integer("reading_time").default(1),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertArticleVersionSchema = createInsertSchema(articleVersions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertArticleVersion = z.infer<typeof insertArticleVersionSchema>;
+export type ArticleVersion = typeof articleVersions.$inferSelect;
+
+export const comments = pgTable("comments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  articleId: varchar("article_id").notNull(),
+  author: text("author").notNull(),
+  email: text("email").notNull(),
+  content: text("content").notNull(),
+  approved: boolean("approved").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCommentSchema = z.object({
+  articleId: z.string().min(1, "文章ID不能为空"),
+  author: z.string().min(1, "名字不能为空").max(100, "名字不能超过100个字符"),
+  email: z.string().email("邮箱格式不正确"),
+  content: z.string().min(1, "评论不能为空").max(5000, "评论不能超过5000个字符"),
+});
+
+export type InsertComment = z.infer<typeof insertCommentSchema>;
+export type Comment = typeof comments.$inferSelect;
+
 export type CodeTheme = 'vscode-dark' | 'dracula' | 'monokai' | 'github-light' | 'nord';
 
 export const CODE_THEMES: { id: CodeTheme; name: string; description: string }[] = [

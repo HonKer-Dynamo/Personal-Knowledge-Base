@@ -5,6 +5,10 @@ import {
   type InsertArticle,
   type Category,
   type InsertCategory,
+  type ArticleVersion,
+  type InsertArticleVersion,
+  type Comment,
+  type InsertComment,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -25,17 +29,30 @@ export interface IStorage {
   createCategory(category: InsertCategory): Promise<Category>;
   updateCategory(id: string, category: Partial<InsertCategory>): Promise<Category | undefined>;
   deleteCategory(id: string): Promise<boolean>;
+  
+  getArticleVersions(articleId: string): Promise<ArticleVersion[]>;
+  createArticleVersion(version: InsertArticleVersion): Promise<ArticleVersion>;
+  deleteArticleVersionsBefore(articleId: string, keepCount: number): Promise<boolean>;
+  
+  getComments(articleId: string): Promise<Comment[]>;
+  createComment(comment: InsertComment): Promise<Comment>;
+  approveComment(id: string): Promise<Comment | undefined>;
+  deleteComment(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private articles: Map<string, Article>;
   private categories: Map<string, Category>;
+  private versions: Map<string, ArticleVersion[]>;
+  private comments: Map<string, Comment[]>;
 
   constructor() {
     this.users = new Map();
     this.articles = new Map();
     this.categories = new Map();
+    this.versions = new Map();
+    this.comments = new Map();
     
     this.initSampleData();
   }
@@ -806,6 +823,81 @@ impl<'a> ImportantExcerpt<'a> {
 
   async deleteCategory(id: string): Promise<boolean> {
     return this.categories.delete(id);
+  }
+
+  async getArticleVersions(articleId: string): Promise<ArticleVersion[]> {
+    return this.versions.get(articleId) || [];
+  }
+
+  async createArticleVersion(version: InsertArticleVersion): Promise<ArticleVersion> {
+    const id = randomUUID();
+    const now = new Date();
+    const newVersion: ArticleVersion = {
+      ...version,
+      id,
+      createdAt: now,
+    };
+    
+    const existing = this.versions.get(version.articleId) || [];
+    existing.push(newVersion);
+    this.versions.set(version.articleId, existing);
+    
+    // Keep only last 10 versions
+    if (existing.length > 10) {
+      existing.splice(0, existing.length - 10);
+    }
+    
+    return newVersion;
+  }
+
+  async deleteArticleVersionsBefore(articleId: string, keepCount: number): Promise<boolean> {
+    const versions = this.versions.get(articleId) || [];
+    if (versions.length > keepCount) {
+      versions.splice(0, versions.length - keepCount);
+      this.versions.set(articleId, versions);
+    }
+    return true;
+  }
+
+  async getComments(articleId: string): Promise<Comment[]> {
+    return (this.comments.get(articleId) || []).filter((c) => c.approved);
+  }
+
+  async createComment(comment: InsertComment): Promise<Comment> {
+    const id = randomUUID();
+    const newComment: Comment = {
+      ...comment,
+      id,
+      createdAt: new Date(),
+    };
+    
+    const existing = this.comments.get(comment.articleId) || [];
+    existing.push(newComment);
+    this.comments.set(comment.articleId, existing);
+    
+    return newComment;
+  }
+
+  async approveComment(id: string): Promise<Comment | undefined> {
+    for (const [, comments] of this.comments) {
+      const comment = comments.find((c) => c.id === id);
+      if (comment) {
+        comment.approved = true;
+        return comment;
+      }
+    }
+    return undefined;
+  }
+
+  async deleteComment(id: string): Promise<boolean> {
+    for (const [articleId, comments] of this.comments) {
+      const index = comments.findIndex((c) => c.id === id);
+      if (index !== -1) {
+        comments.splice(index, 1);
+        return true;
+      }
+    }
+    return false;
   }
 }
 
