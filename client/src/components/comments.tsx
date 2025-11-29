@@ -125,7 +125,7 @@ export function Comments({ articleSlug, articleId }: CommentsProps) {
                     {comment.author}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(comment.createdAt).toLocaleDateString("zh-CN")}
+                    {comment.createdAt ? new Date(comment.createdAt).toLocaleDateString("zh-CN") : ""}
                   </p>
                 </div>
               </div>

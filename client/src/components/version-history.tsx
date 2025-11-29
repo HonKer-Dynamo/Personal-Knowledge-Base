@@ -45,7 +45,7 @@ export function VersionHistory({ articleId }: VersionHistoryProps) {
                     版本 {versions.length - index}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(version.createdAt).toLocaleString("zh-CN")}
+                    {version.createdAt ? new Date(version.createdAt).toLocaleString("zh-CN") : ""}
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground">
