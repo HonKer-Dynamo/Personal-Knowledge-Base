@@ -8,7 +8,6 @@ import {
   Share2,
   BookOpen,
   Edit,
-  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Comments } from "@/components/comments";
 import { VersionHistory } from "@/components/version-history";
+import { ExportMenu } from "@/components/export-menu";
 import { useToast } from "@/hooks/use-toast";
 import type { Article, Category } from "@shared/schema";
 
@@ -81,6 +81,12 @@ export default function ArticleDetail() {
       toast({
         title: "导出成功",
         description: `${article.title}.pdf 已下载`,
+      });
+    } else {
+      toast({
+        title: "导出失败",
+        description: "PDF导出库未加载，请刷新页面重试",
+        variant: "destructive",
       });
     }
   };
@@ -183,6 +189,7 @@ export default function ArticleDetail() {
           </div>
           <div className="flex-1" />
           <div className="flex items-center gap-2">
+            <ExportMenu article={article} />
             <Button
               variant="ghost"
               size="icon"
@@ -190,7 +197,9 @@ export default function ArticleDetail() {
               data-testid="button-export-pdf"
               title="导出为PDF"
             >
-              <Download className="h-4 w-4" />
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
             </Button>
             <Button
               variant="ghost"

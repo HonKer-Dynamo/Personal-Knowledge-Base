@@ -21,7 +21,22 @@ export default function WritePage() {
       const response = await apiRequest("POST", "/api/articles", data);
       return await response.json() as Article;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      // 新文章创建时，自动保存初始版本
+      try {
+        await apiRequest("POST", `/api/articles/${data.id}/versions`, {
+          title: data.title,
+          content: data.content,
+          excerpt: data.excerpt,
+          categoryId: data.categoryId,
+          tags: data.tags,
+          published: data.published,
+          readingTime: data.readingTime,
+        });
+      } catch (err) {
+        console.error("版本保存失败:", err);
+      }
+
       queryClient.invalidateQueries({ queryKey: ["/api/articles"] });
       toast({
         title: data.published ? "文章已发布" : "草稿已保存",

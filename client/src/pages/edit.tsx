@@ -28,9 +28,26 @@ export default function EditPage() {
       const response = await apiRequest("PATCH", `/api/articles/${article?.id}`, data);
       return await response.json() as Article;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      // 自动保存版本
+      try {
+        await apiRequest("POST", `/api/articles/${article?.id}/versions`, {
+          title: data.title,
+          content: data.content,
+          excerpt: data.excerpt,
+          categoryId: data.categoryId,
+          tags: data.tags,
+          published: data.published,
+          readingTime: data.readingTime,
+        });
+      } catch (err) {
+        console.error("版本保存失败:", err);
+      }
+
       queryClient.invalidateQueries({ queryKey: ["/api/articles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/articles", slug] });
+      queryClient.invalidateQueries({ queryKey: ["/api/articles", article?.id, "versions"] });
+      
       toast({
         title: data.published ? "文章已更新" : "草稿已保存",
         description: data.published
