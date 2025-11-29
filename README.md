@@ -1,4 +1,9 @@
-# 个人知识库 - Personal Knowledge Base
+# 🧠 个人知识库 - Personal Knowledge Base
+[![GitHub stars](https://img.shields.io/github/stars/HonKerDynamo/Personal-Knowledge-Base?style=social)](https://github.com/HonKerDynamo/Personal-Knowledge-Base)
+[![Gitee stars](https://gitee.com/honkerdynamo/personal-knowledge-base/badge/star.svg)](https://gitee.com/honkerdynamo/personal-knowledge-base)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js Version](https://img.shields.io/badge/Node.js-18%2B-brightgreen.svg)](https://nodejs.org/)
+[![Last Commit](https://img.shields.io/github/last-commit/HonKerDynamo/Personal-Knowledge-Base.svg)](https://github.com/HonKerDynamo/Personal-Knowledge-Base/commits/main)
 
 一个完整的全栈 Markdown 知识库网站，支持文章编辑、版本历史、评论系统、多格式导出和 5 种代码配色主题。
 
@@ -148,4 +153,4 @@ MIT
 
 ## 作者
 
-个人知识库项目 - 2024
+HonKerDynamo
