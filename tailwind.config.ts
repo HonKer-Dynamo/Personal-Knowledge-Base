@@ -83,9 +83,9 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)"],
-        serif: ["var(--font-serif)"],
-        mono: ["var(--font-mono)"],
+        sans: ["Inter", "PingFang SC", "Microsoft YaHei", "var(--font-sans)", "sans-serif"],
+        serif: ["Merriweather", "var(--font-serif)", "serif"],
+        mono: ["JetBrains Mono", "Fira Code", "Consolas", "var(--font-mono)", "monospace"],
       },
       keyframes: {
         "accordion-down": {
