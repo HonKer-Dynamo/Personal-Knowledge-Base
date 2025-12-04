@@ -1,6 +1,10 @@
 .claude/
 .local/
 .spec-workflow/
+CLAUDE.md
+client/CLAUDE.md
+server/CLAUDE.md
+shared/CLAUDE.md
 
-
+node_modules/
 dist/

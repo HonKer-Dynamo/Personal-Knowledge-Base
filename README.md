@@ -9,16 +9,45 @@
 
 ## 快速开始
 
+### 系统要求
+- Node.js 18+
+- npm 或 yarn
+
+### 安装依赖
 ```bash
-# 安装依赖
 npm install
+```
 
-# 启动开发服务器
+### 开发环境
+```bash
 npm run dev
+```
+服务器将在 http://localhost:5000 启动，支持热重载和开发调试。
 
+### 生产构建 & 运行
+
+#### Linux/macOS
+```bash
 # 构建生产版本
 npm run build
+
+# 启动生产服务器
+NODE_ENV=production node dist/index.cjs
 ```
+
+#### Windows
+```bash
+# 构建生产版本
+npm run build
+
+# 启动生产服务器（命令行）
+set NODE_ENV=production && node dist/index.cjs
+
+# 启动生产服务器（PowerShell）
+$env:NODE_ENV="production"; node dist/index.cjs
+```
+
+生产服务器将在 http://localhost:5000 启动，同时提供前端静态文件和后端 API 服务。
 
 ## 核心特性
 
